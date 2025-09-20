@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Authorization;
 var builder = WebApplication.CreateBuilder(args);
 
 var key = builder.Configuration.GetSection("Jwt").ToString();
-if(string.IsNullOrEmpty(key))
+if (string.IsNullOrEmpty(key))
     throw new Exception("Chave JWT não informada");
 
 builder.Services.AddAuthentication(option =>
@@ -160,7 +160,7 @@ app.MapPost("/administradores", ([FromBody] AdministradorDTO administradorDTO, I
         Perfil = adm.Perfil,
         Email = adm.Email
     });
-}).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute{ Roles = "Adm"}).WithTags("Administrador");
+}).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute { Roles = "Adm" }).WithTags("Administrador");
 
 app.MapGet("/administradores", ([FromQuery] int? pagina, IAdministradorService administradorService) =>
 {
@@ -175,7 +175,7 @@ app.MapGet("/administradores", ([FromQuery] int? pagina, IAdministradorService a
         });
     }
     return Results.Ok(adms);
-}).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute{ Roles = "Adm"}).WithTags("Administrador");
+}).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute { Roles = "Adm" }).WithTags("Administrador");
 
 app.MapGet("/admistradores/{id}", ([FromRoute] int id, IAdministradorService administradorService) =>
 {
@@ -188,7 +188,7 @@ app.MapGet("/admistradores/{id}", ([FromRoute] int id, IAdministradorService adm
         Perfil = adm.Perfil,
         Email = adm.Email
     });
-}).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute{ Roles = "Adm"}).WithTags("Administrador");
+}).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute { Roles = "Adm" }).WithTags("Administrador");
 #endregion
 
 #region Veiculos
@@ -199,22 +199,22 @@ ErrosDeValidacao validacaoDTO(VeiculoDTO veiculoDTO)
         Mensagem = new List<string>()
     };
 
-    if(string.IsNullOrEmpty(veiculoDTO.Nome))
+    if (string.IsNullOrEmpty(veiculoDTO.Nome))
         validacao.Mensagem.Add("O nome do veículo é obrigatório.");
 
-    if(string.IsNullOrEmpty(veiculoDTO.Marca))
+    if (string.IsNullOrEmpty(veiculoDTO.Marca))
         validacao.Mensagem.Add("A marca do veículo é obrigatória.");
 
-    if(veiculoDTO.Ano < 1886 || veiculoDTO.Ano > DateTime.Now.Year + 1)
+    if (veiculoDTO.Ano < 1886 || veiculoDTO.Ano > DateTime.Now.Year + 1)
         validacao.Mensagem.Add("O ano do veículo é inválido.");
-    
+
     return validacao;
 }
 
 app.MapPost("/veiculos", ([FromBody] VeiculoDTO veiculoDTO, IVeiculoService veiculoService) =>
 {
     var erros = validacaoDTO(veiculoDTO);
-    if(erros.Mensagem.Count > 0)
+    if (erros.Mensagem.Count > 0)
         return Results.BadRequest(erros);
 
     var veiculo = new Veiculo
@@ -226,14 +226,14 @@ app.MapPost("/veiculos", ([FromBody] VeiculoDTO veiculoDTO, IVeiculoService veic
     veiculoService.Incluir(veiculo);
 
     return Results.Created($"/veiculo/{veiculo.Id}", veiculo);
-}).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute{ Roles = "Adm,Editor"}).WithTags("Veiculo");
+}).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute { Roles = "Adm,Editor" }).WithTags("Veiculo");
 
 app.MapGet("/veiculos", ([FromQuery] int? pagina, IVeiculoService veiculoService) =>
 {
     var veiculos = veiculoService.Todos(pagina);
 
     return Results.Ok(veiculos);
-}).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute{ Roles = "Adm,Editor"}).WithTags("Veiculo");
+}).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute { Roles = "Adm,Editor" }).WithTags("Veiculo");
 
 app.MapGet("/veiculos/{id}", ([FromRoute] int id, IVeiculoService veiculoService) =>
 {
@@ -242,12 +242,12 @@ app.MapGet("/veiculos/{id}", ([FromRoute] int id, IVeiculoService veiculoService
     if (veiculo == null) return Results.NotFound();
 
     return Results.Ok(veiculo);
-}).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute{ Roles = "Adm,Editor"}).WithTags("Veiculo");
+}).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute { Roles = "Adm,Editor" }).WithTags("Veiculo");
 
 app.MapPut("/veiculos/{id}", ([FromRoute] int id, VeiculoDTO veiculoDTO, IVeiculoService veiculoService) =>
 {
     var erros = validacaoDTO(veiculoDTO);
-    if(erros.Mensagem.Count > 0)
+    if (erros.Mensagem.Count > 0)
         return Results.BadRequest(erros);
 
     var veiculo = veiculoService.BuscarPorId(id);
@@ -260,7 +260,7 @@ app.MapPut("/veiculos/{id}", ([FromRoute] int id, VeiculoDTO veiculoDTO, IVeicul
     veiculoService.Alterar(veiculo);
 
     return Results.Ok(veiculo);
-}).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute{ Roles = "Adm"}).WithTags("Veiculo");
+}).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute { Roles = "Adm" }).WithTags("Veiculo");
 
 app.MapDelete("/veiculos/{id}", ([FromRoute] int id, IVeiculoService veiculoService) =>
 {
@@ -270,7 +270,7 @@ app.MapDelete("/veiculos/{id}", ([FromRoute] int id, IVeiculoService veiculoServ
     veiculoService.Excluir(veiculo);
 
     return Results.NoContent();
-}).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute{ Roles = "Adm"}).WithTags("Veiculo");
+}).RequireAuthorization().RequireAuthorization(new AuthorizeAttribute { Roles = "Adm" }).WithTags("Veiculo");
 #endregion
 
 #region App
@@ -281,3 +281,5 @@ app.UseAuthorization();
 
 app.Run();
 #endregion
+
+public partial class Program { }

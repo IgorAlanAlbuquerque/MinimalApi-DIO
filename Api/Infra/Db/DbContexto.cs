@@ -5,6 +5,7 @@ namespace minimal_api.Infra.Db;
 
 public class DbContexto : DbContext
 {
+    public DbContexto(DbContextOptions<DbContexto> options) : base(options) { }
     private readonly IConfiguration _configuracaoAppSettings;
     public DbContexto(IConfiguration configuration)
     {
