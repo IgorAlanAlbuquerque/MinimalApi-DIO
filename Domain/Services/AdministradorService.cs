@@ -1,4 +1,3 @@
-using System.Data.Common;
 using minimal_api.Domain.DTOs;
 using minimal_api.Domain.Entity;
 using minimal_api.Domain.Interfaces;
